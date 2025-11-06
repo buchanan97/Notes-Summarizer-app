@@ -22,6 +22,7 @@ class summarizer:
             summary = [str(sent) for sent in summarizer(parser.document, sentence_count)]
             if summary:
                 return " ".join(summary)
+            else:
                 return "Text too short to summarize"
         except ValueError as e:
             return str(e)
