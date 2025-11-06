@@ -1,16 +1,27 @@
-# services/ir_engine.py
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.metrics.pairwise import cosine_similarity
-import json
+# services/summarizer.py
 
-class IREngine:
-    def __init__(self, docs):
-        self.vectorizer = TfidfVectorizer()
-        self.doc_vectors = self.vectorizer.fit_transform(docs)
-        self.docs = docs
+#her is the code for the summarizer service
 
-    def query(self, text):
-        query_vec = self.vectorizer.transform([text])
-        scores = cosine_similarity(query_vec, self.doc_vectors).flatten()
-        top_indices = scores.argsort()[-3:][::-1]
-        return [(self.docs[i], scores[i]) for i in top_indices]
+#taking the sumy library to summarize text, and importing the library here so that the class works out. 
+# please run pip install sumy if you have not already installed it. or else you will get an error
+from sumy.parsers.plaintext import PlaintextParser
+from sumy.nlp.tokenizers import Tokenizer
+from sumy.summarizers.lsa import LsaSummarizer
+from sumy.nlp.stemmers import Stemmer
+from sumy.utils import get_stop_words
+
+class summarizer:
+    def summarize(self, text, ratio=0.2):
+        try:
+            parser = PlaintextParser.from_string(text, Tokenizer("english"))
+            stemmer = Stemmer("english")
+            summarizer = LsaSummarizer(stemmer)
+            summarizer.stop_words = get_stop_words("english")
+            
+            sentence_count = max(int(len(parser.document.sentences) * ratio), 1)
+            summary = [str(sent) for sent in summarizer(parser.document, sentence_count)]
+            if summary:
+                return " ".join(summary)
+                return "Text too short to summarize"
+        except ValueError as e:
+            return str(e)
