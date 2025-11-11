@@ -1,0 +1,28 @@
+{% extends "layout.html" %}
+{% block title %}Search | "APP NAME"{% endblock %}
+
+{% block content %}
+<div class="search-main">
+  <form method="POST" class="search-form">
+    <input type="text" name="query" placeholder="Search for algorithms, data structures, ML concepts..." required>
+    <button type="submit" class="search-btn">Search</button>
+  </form>
+
+  <section class="recent">
+    <h4>Recent Searches</h4>
+    <div class="tags">
+      <span>Algorithms</span>
+      <span>Machine Learning</span>
+    </div>
+  </section>
+
+  <section class="trending">
+    <h4>Trending Topics</h4>
+    <div class="trend-cards">
+      <div class="trend-card">📘 Big O Notation</div>
+      <div class="trend-card">🧠 Neural Networks</div>
+      <div class="trend-card">💡 Quantum Computing</div>
+    </div>
+  </section>
+</div>
+{% endblock %}
