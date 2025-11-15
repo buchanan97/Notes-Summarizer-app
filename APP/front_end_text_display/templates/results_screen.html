@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+{% block title %}Results | "APP NAME"{% endblock %}
+
+{% block content %}
+<div class="results-header">
+  <button class="back-btn" onclick="window.history.back()">← Back</button>
+  <h2>Results for '{{ query }}'</h2>
+</div>
+
+<div class="results-main">
+  <div class="filter-bar">
+    <button>Filter</button>
+    <button>Sort</button>
+  </div>
+
+  {% if results %}
+    {% for r in results %}
+      <div class="result-card">
+        <h3>{{ r.title }}</h3>
+        <p class="source">Textbook: {{ r.source }}</p>
+        <p class="summary">{{ r.summary }}</p>
+        <button class="read-btn">Read More</button>
+      </div>
+    {% endfor %}
+  {% else %}
+    <p class="no-results">No results found. Try another query.</p>
+  {% endif %}
+</div>
+{% endblock %}
