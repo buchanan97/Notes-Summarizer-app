@@ -34,12 +34,14 @@ class IREngine:
         docs = []
 
         for file in os.listdir(self.pdf_folder):
-            if file.lower().endswith(".pdf"):
-                path = os.path.join(self.pdf_folder, file)
-                text = self.extract_pdf_text(path)
+         if file.lower().endswith(".txt"):
+            path = os.path.join(self.pdf_folder, file)
+            with open(path, "r", encoding="utf-8") as f:
+                text = f.read()
                 docs.append(text)
 
         return docs
+
 
     def extract_pdf_text(self, path):
         reader = PdfReader(path)
@@ -163,3 +165,19 @@ class IREngine:
                 best_para = p.strip()
 
         return best_para or paragraphs[0]
+    
+    def get_document_by_id(self, doc_id):
+        """Return a full document for the 'Read More' view."""
+        try:
+            doc_id = int(doc_id)
+            if 0 <= doc_id < len(self.docs):
+                text = self.docs[doc_id]
+                filename = f"Document {doc_id + 1}"
+                return {
+                    "filename": filename,
+                    "text": text,
+                    "summary": None  
+                }
+        except Exception as e:
+            print(f"[ERROR] get_document_by_id failed for {doc_id}: {e}")
+        return None

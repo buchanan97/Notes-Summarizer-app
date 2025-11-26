@@ -1,37 +1,78 @@
-from flask import Flask, render_template, request, redirect, url_for
-from APP.services.ir_engine import IREngine
 from flask import Flask, render_template, request
 from APP.services.ir_engine import IREngine
 from APP.services.summarizer import summarizer
 import os
+import threading
+import webview
 
 app = Flask(__name__)
 
-PROCESSED_DIR = "APP/data/processed_data"
-docs = []
-filenames = []
+PROCESSED_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "data", "processed_data"))
 
-for file in os.listdir(PROCESSED_DIR):
-    if file.endswith(".txt"):
-        with open(os.path.join(PROCESSED_DIR, file), "r", encoding="utf-8") as f:
-            docs.append(f.read())
-            filenames.append(file)
-
-ir = IREngine(docs)
+ir = IREngine(PROCESSED_DIR)
 sumr = summarizer()
 
 @app.route("/")
 def welcome():
     return render_template("welcome_screen.html")
 
+
 @app.route("/search", methods=["GET", "POST"])
 def search():
     if request.method == "POST":
         query = request.form["query"]
-        # Here you can call IR engine when ready
-        results = []  # placeholder
+        results = ir.search(query)
+
+        for r in results:
+            r["summary"] = sumr.summarize(r["paragraph"]) or "Summary unavailable."
+
         return render_template("results_screen.html", query=query, results=results)
     return render_template("search_screen.html")
 
+
+@app.route("/view/<doc_id>")
+def view_doc(doc_id):
+    doc = ir.get_document_by_id(doc_id)
+
+    if not doc:
+        return "Document not found", 404
+
+    filename = doc.get("filename") or f"Document {doc_id}"
+    text = doc.get("text") or "No content available."
+
+    summary = doc.get("summary")
+    if not summary or summary == "No summary available for this document.":
+        try:
+            summary = sumr.summarize(text)
+            if not summary:
+                summary = "Summary unavailable."
+        except Exception as e:
+            print(f"[ERROR] Summary generation failed: {e}")
+            summary = "Summary unavailable."
+
+    return render_template(
+        "full_text_view.html",
+        filename=filename,
+        text=text,
+        summary=summary
+    )
+
+
+def run_flask():
+    app.run(debug=False, port=5000, use_reloader=False)
+
 if __name__ == "__main__":
-    app.run(debug=True)
+    t = threading.Thread(target=run_flask)
+    t.daemon = True
+    t.start()
+
+    webview.create_window(
+        title="Notes Summarizer App",
+        url="http://127.0.0.1:5000",
+        width=1200,
+        height=800,
+        resizable=True,
+        confirm_close=True,
+        background_color="#f7f9fc"
+    )
+    webview.start()

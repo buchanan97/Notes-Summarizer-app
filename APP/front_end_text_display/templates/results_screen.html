@@ -1,29 +1,47 @@
 {% extends "layout.html" %}
-{% block title %}Results | "APP NAME"{% endblock %}
+{% block title %}Search Results | Notes Summarizer{% endblock %}
 
 {% block content %}
-<div class="results-header">
-  <button class="back-btn" onclick="window.history.back()">← Back</button>
-  <h2>Results for '{{ query }}'</h2>
-</div>
+<div class="results-container">
 
-<div class="results-main">
-  <div class="filter-bar">
-    <button>Filter</button>
-    <button>Sort</button>
+  <div class="results-header">
+    <button class="back-btn" onclick="window.history.back()">←</button>
+    <h2>Results for '{{ query }}'</h2>
+  </div>
+
+  <div class="filter-sort-bar">
+    <button class="filter-btn">Filter</button>
+    <button class="sort-btn">Sort</button>
   </div>
 
   {% if results %}
     {% for r in results %}
       <div class="result-card">
-        <h3>{{ r.title }}</h3>
-        <p class="source">Textbook: {{ r.source }}</p>
-        <p class="summary">{{ r.summary }}</p>
-        <button class="read-btn">Read More</button>
+        <div class="card-content">
+          <div class="card-text">
+            <h3 class="doc-title">{{ r.filename | replace('.txt', '') }}</h3>
+            <p class="doc-source">Source: {{ r.source if r.source else "Textbook" }}</p>
+
+            <p class="doc-summary">
+              {{ (r.summary[:250] + "...") if r.summary and r.summary|length > 250 else r.summary or "No summary available." }}
+            </p>
+          </div>
+
+          <div class="card-action">
+            <button class="read-btn"
+                    onclick="window.location.href='{{ url_for('view_doc', doc_id=r.doc_id) }}'">
+              Read More
+            </button>
+          </div>
+        </div>
       </div>
     {% endfor %}
   {% else %}
     <p class="no-results">No results found. Try another query.</p>
   {% endif %}
+
+  <div class="pagination">
+    <button class="load-more">Load More</button>
+  </div>
 </div>
 {% endblock %}

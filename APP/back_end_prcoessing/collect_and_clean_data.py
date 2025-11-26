@@ -11,7 +11,11 @@ def convert_pdf_to_text(pdf_path):
     reader = PdfReader(pdf_path)
     text = ""
     for page in reader.pages:
-        text += page.extract_text() or ""
+        extracted = page.extract_text()
+        if extracted:
+            text += extracted + "\n"
+    if len(text) > 30000:
+        text = text[:30000]
     return text
 
 def collect_and_clean():
