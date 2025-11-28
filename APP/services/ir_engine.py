@@ -45,12 +45,31 @@ class IREngine:
 
     def extract_pdf_text(self, path):
         reader = PdfReader(path)
-        text = ""
+        full_text= []
+    
         for page in reader.pages:
             extracted = page.extract_text()
-            if extracted:
-                text += extracted + "\n"
-        return text
+            if not extracted:
+                continue
+#removing page numbers and fix hyphenation issues in the extracted text
+                text = re.sub(r'^\s*-?\s*\d+\s*-?\s*$', '', text, flags=re.MULTILINE) # Regex: Matches any line that is just digits (e.g., "14") or digits with dashes (e.g., "- 14 -")
+            # flags=re.MULTILINE ensures '^' and '$' match the start/end of each line, not just the string
+
+# PDFs often split words at the end of a line like "process- \n ing". 
+            # This stitches them back to "processing".
+                text = re.sub(r'(\w+)-\n(\w+)', r'\1\2', text)
+                lines = text.split('\n')
+                cleaned_lines = []
+                for line in lines:
+                    # If a line is very short (e.g. < 4 chars) and not a common punctuation mark, skip it.
+                # This helps remove stray artifacts like "|" or "v1.0"
+                    if len(line.strip()) < 4 and not re.match(r'[A-Za-z0-9]+$', line.strip()):
+                        continue
+                    cleaned_lines.append(line)
+                text = "\n".join(cleaned_lines)
+                full_text.append(text)
+
+        return "\n".join(full_text)
 
     def preprocess(self, text):
         text = text.lower()
