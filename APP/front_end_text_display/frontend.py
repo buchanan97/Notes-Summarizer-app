@@ -1,16 +1,38 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, url_for, session
 from APP.services.ir_engine import IREngine
 from APP.services.summarizer import summarizer
 import os
 import threading
-import webview
+import webbrowser
+import time
 
 app = Flask(__name__)
+app.secret_key = "supersecretkey" 
 
 PROCESSED_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "data", "processed_data"))
-
 ir = IREngine(PROCESSED_DIR)
 sumr = summarizer()
+
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "POST":
+        username = request.form.get("username")
+        password = request.form.get("password")
+        if username == "test" and password == "password":
+            session["logged_in"] = True
+            session["username"] = username
+            return redirect(url_for("search"))   
+        else:
+            return render_template("login.html", error="Invalid username or password")
+    return render_template("login.html")
+
+
+@app.route("/logout")
+def logout():
+    session.clear()
+    return redirect(url_for("welcome"))
+
 
 @app.route("/")
 def welcome():
@@ -33,7 +55,6 @@ def search():
 @app.route("/view/<doc_id>")
 def view_doc(doc_id):
     doc = ir.get_document_by_id(doc_id)
-
     if not doc:
         return "Document not found", 404
 
@@ -50,29 +71,18 @@ def view_doc(doc_id):
             print(f"[ERROR] Summary generation failed: {e}")
             summary = "Summary unavailable."
 
-    return render_template(
-        "full_text_view.html",
-        filename=filename,
-        text=text,
-        summary=summary
-    )
+    return render_template("full_text_view.html", filename=filename, text=text, summary=summary)
 
 
 def run_flask():
     app.run(debug=False, port=5000, use_reloader=False)
 
+
 if __name__ == "__main__":
     t = threading.Thread(target=run_flask)
     t.daemon = True
     t.start()
-
-    webview.create_window(
-        title="Notes Summarizer App",
-        url="http://127.0.0.1:5000",
-        width=1200,
-        height=800,
-        resizable=True,
-        confirm_close=True,
-        background_color="#f7f9fc"
-    )
-    webview.start()
+    time.sleep(1)
+    webbrowser.open("http://127.0.0.1:5000")
+    while True:
+        time.sleep(1)
