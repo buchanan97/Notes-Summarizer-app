@@ -9,7 +9,7 @@
 </head>
 <body>
 
-    <header class="global-header">
+  <header class="global-header">
     <div class="nav">
       <img src="{{ url_for('static', filename='assets/logo.png') }}" class="nav-logo" alt="APP NAME Logo">
       <span class="nav-title">"APP NAME"</span>
@@ -23,6 +23,13 @@
 
   <footer class="global-footer">
     <p>© 2025 "APP NAME" • Built for Knowledge Discovery</p>
+
+    {% if session.get('logged_in') %}
+    <p style="margin-top: 8px; font-size: 0.9em; opacity: 0.8;">
+      Signed in as: <strong>{{ session.get('username') }}</strong>
+    </p>
+    {% endif %}
   </footer>
+
 </body>
 </html>
