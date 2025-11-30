@@ -3,6 +3,7 @@
 
 {% block content %}
 <div class="welcome-container">
+  
   <img src="{{ url_for('static', filename='assets/logo.png') }}" class="logo" alt="APP NAME">
   <img src="{{ url_for('static', filename='assets/welcome_hero.svg') }}" class="hero" alt="Image">
 
@@ -10,6 +11,42 @@
   <p>Query topics, get relevant passages, and summarized insights from textbooks and notes.</p>
 
   <button onclick="window.location.href='/search'" class="cta-btn">Get Started</button>
-  <p class="subtext">Already a member? <a href="#">Login</a></p>
+
+  <!-- LOGIN / SIGNED IN SECTION -->
+  <div style="margin-top: 40px; text-align: center;">
+    {% if not logged_in %}
+      <a href="{{ url_for('login') }}" class="login-btn">Login</a>
+    {% else %}
+      <p style="font-size: 1em; opacity: 0.8;">
+        Signed in as: <strong>{{ username }}</strong>
+      </p>
+      <a href="{{ url_for('logout') }}" class="logout-btn">Logout</a>
+    {% endif %}
+  </div>
+
 </div>
+
+<style>
+.login-btn {
+    display: inline-block;
+    padding: 12px 20px;
+    background: #4a90e2;
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    font-size: 1.1em;
+}
+
+.logout-btn {
+    display: inline-block;
+    margin-top: 8px;
+    padding: 10px 20px;
+    background: #d9534f;
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    font-size: 1em;
+}
+</style>
+
 {% endblock %}
