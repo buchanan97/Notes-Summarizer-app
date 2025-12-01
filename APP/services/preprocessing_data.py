@@ -23,7 +23,7 @@ import re
 #instead I used a simpler appraoch.
 #to text preprocessing using re essentially a sophisticated pattern-matching tool
 
-class Preprocessing_data:
+class Preprocessor:
     def __init__(self):
         pass
 
