@@ -1,0 +1,18 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="full-text-container">
+
+  <header class="full-text-header">
+    <button class="back-btn" onclick="window.history.back()">← Back</button>
+    <h2>{{ filename }}</h2>
+  </header>
+
+  
+  <main class="full-text-main">
+    <div class="text-box">
+      <pre>{{ text }}</pre>
+    </div>
+  </main>
+
+</div>
+{% endblock %}
