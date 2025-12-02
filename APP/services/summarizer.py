@@ -41,9 +41,9 @@ class Summarizer:
         if len(text) < 50: # Text should be reasonably long for summarization
             return "Text too short to summarize."
         
-        # Optional: Limit input text length for performance/resource reasons if very large documents
+        # Limit input text length for performance/resource reasons if very large documents
         # For example, sumy might struggle with extremely long inputs
-        if len(text) > 100000: # Example limit, adjust as needed
+        if len(text) > 100000: # limit to 100,000 characters
              text = text[:100000]
              print("[WARNING] Summarizer: Input text truncated due to excessive length.")
 
