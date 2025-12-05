@@ -17,20 +17,21 @@
 
     <main class="search-main">
         <section class="search-form-section">
-            <form id="search-form">
-                <input type="text" id="query" name="query" placeholder="Enter your search query..." required>
-                <button type="submit" class="search-submit-btn">Search</button>
+            <form id="search-form" class="search-form-inline">
+                <input type="text" id="query" name="query" placeholder="Search for algorithms, data structures, ML concepts..." required>
             </form>
         </section>
 
         <section class="recent-searches-section">
             <h2>Recent Searches</h2>
             {% if recent_searches %}
-                <ul class="recent-searches-list">
+                <div class="recent-searches-tags">
                     {% for search in recent_searches %}
-                        <li>{{ search.query_text }} ({{ search.timestamp.strftime('%Y-%m-%d %H:%M') }})</li>
+                        <span class="search-tag" onclick="document.getElementById('query').value='{{ search.query_text }}'; document.getElementById('search-form').requestSubmit();">
+                            {{ search.query_text }}
+                        </span>
                     {% endfor %}
-                </ul>
+                </div>
             {% else %}
                 <p class="no-recent-searches">No recent searches.</p>
             {% endif %}
@@ -46,8 +47,6 @@
 </div>
 
 <script>
-    // Define the base URL for viewing documents once, using Jinja2
-    // IMPORTANT: 'doc_filename' matches the route parameter in routes.py
     const viewDocBaseUrl = "{{ url_for('main.view_doc', doc_filename='DOC_ID_PLACEHOLDER') }}";
 
     document.getElementById('search-form').addEventListener('submit', async function(event) {
@@ -55,7 +54,6 @@
         const query = document.getElementById('query').value;
         const resultsDiv = document.getElementById('search-results');
         resultsDiv.innerHTML = '<p class="loading-message">Searching...</p>';
-
         console.log("Search initiated for query:", query);
 
         try {
@@ -89,10 +87,9 @@
 
                     const docUrl = viewDocBaseUrl.replace('DOC_ID_PLACEHOLDER', encodeURIComponent(result.filename));
 
-                    // Log the content of each result object before inserting it
                     console.log("Result object:", result);
                     console.log("Display Filename:", result.display_filename);
-                    console.log("Snippet:", result.snippet); // <--- THIS IS THE CORRECTED CONSOLE LOG
+                    console.log("Snippet:", result.snippet); 
 
                     resultCard.innerHTML = `
                         <div class="card-content">
@@ -101,11 +98,7 @@
                                 <p class="doc-source">Source: ${result.source || "Textbook"}</p>
                                 <p class="doc-snippet">${result.snippet}</p> 
                             </div>
-                            <div class="card-action">
-                                <button class="read-btn" onclick="window.location.href='${docUrl}'">
-                                    Read More
-                                </button>
-                            </div>
+                            
                         </div>
                     `;
                     resultsDiv.appendChild(resultCard);

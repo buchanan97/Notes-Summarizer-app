@@ -1,22 +1,17 @@
-# notes-summarizer-app/back_end_processing/collect_and_clean_data.py
 import os
 import sys
 from PyPDF2 import PdfReader
 import re
 
-# --- Add the project root to sys.path BEFORE any other imports that rely on it ---
 project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 if project_root not in sys.path:
     sys.path.append(project_root)
 
-# Now, import your preprocessor from APP.services
 from APP.services.preprocessing_data import Preprocessor
 
-# Correct RAW_DIR and PROCESSED_DIR using the project_root
 RAW_DIR = os.path.join(project_root, "data", "raw_notes")
 PROCESSED_DIR = os.path.join(project_root, "data", "processed_data")
 
-# Instantiate the preprocessor with the correct class name
 processor = Preprocessor()
 
 def convert_pdf_to_text(pdf_path):
@@ -27,7 +22,6 @@ def convert_pdf_to_text(pdf_path):
         if extracted:
             text += extracted + "\n"
     
-    # PDF cleanup logic
     text = re.sub(r'^\s*-?\s*\d+\s*-?\s*$', '', text, flags=re.MULTILINE)
     text = re.sub(r'(\w+)-\n(\w+)', r'\1\2', text)
     lines = text.split('\n')
@@ -42,7 +36,6 @@ def convert_pdf_to_text(pdf_path):
         text = text[:30000]
     return text
 
-# THIS IS THE *ONLY* collect_and_clean function that should be in the file
 def collect_and_clean():
     print(f"Starting data collection and cleaning...")
     print(f"Reading raw notes from: {RAW_DIR}")
@@ -54,18 +47,17 @@ def collect_and_clean():
     for file in os.listdir(RAW_DIR):
         file_path = os.path.join(RAW_DIR, file)
         
-        # Skip directories
         if os.path.isdir(file_path):
             continue
 
         text = ""
         if file.lower().endswith(".pdf"):
             print(f"  Converting PDF: {file}")
-            try: # <--- THIS IS THE TRY BLOCK
+            try: 
                 text = convert_pdf_to_text(file_path)
-            except Exception as e: # <--- THIS IS THE EXCEPT BLOCK
+            except Exception as e: 
                 print(f"  ERROR: Failed to process PDF '{file}': {e}. Skipping this file.")
-                continue # <--- SKIP TO THE NEXT FILE
+                continue 
         elif file.lower().endswith(".txt"):
             print(f"  Reading TXT: {file}")
             try:

@@ -4,20 +4,17 @@ import threading
 import webview
 from flask import Flask
 from extensions import db, login_manager
-from routes import main_bp # Keep this import here
+from routes import main_bp 
 from APP.services.ir_engine import IREngine
 from APP.services.summarizer import Summarizer
 
-# Add project root to sys.path for module discovery
 project_root = os.path.abspath(os.path.dirname(__file__))
 if project_root not in sys.path:
     sys.path.append(project_root)
 
-# Correct the path for the database file
 DATABASE_DIR = os.path.join(project_root, 'data')
 DATABASE_FILE = os.path.join(DATABASE_DIR, 'app.db')
 
-# Ensure the directory for the database exists
 os.makedirs(DATABASE_DIR, exist_ok=True)
 
 class Config:
@@ -47,8 +44,6 @@ def create_app():
     with app.app_context():
         db.create_all()
 
-        # --- IMPORTANT: Initialize IR_Engine and Summarizer here and attach to app.config ---
-        # This makes them available via current_app.config['IR_ENGINE'] in routes.py
         try:
             processed_data_path = os.path.join(project_root, "data", "processed_data")
             if not os.path.exists(processed_data_path) or not os.listdir(processed_data_path):

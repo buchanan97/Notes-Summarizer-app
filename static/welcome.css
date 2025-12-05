@@ -1,0 +1,19 @@
+.welcome-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  text-align: center;
+  padding: 0 20px;
+}
+
+.welcome { width: 250px; margin-bottom: 35px; } 
+
+.welcome-container h1 { font-size: 1.6rem; margin-bottom: 10px; }
+.welcome-container p { color: #475569; max-width: 360px; margin-bottom: 0; }
+
+.cta-btn { margin-top: 25px; } 
+
+.subtext { margin-top: 15px; color: #475569; }
+.subtext a { color: #00b4d8; text-decoration: none; }

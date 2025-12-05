@@ -40,7 +40,6 @@ def perform_search_api():
        return jsonify({"error": "Query cannot be empty"}), 400
 
 
-   # --- GET IR_ENGINE AND SUMMARIZER FROM CURRENT_APP.CONFIG ---
    ir_engine = current_app.config.get('IR_ENGINE')
    summarizer = current_app.config.get('SUMMARIZER')
 
@@ -68,8 +67,8 @@ def perform_search_api():
 
        search_snippet = ""
        if raw_best_paragraph:
-        search_snippet = summarizer.summarize(raw_best_paragraph, sentence_count=2) # <--- Generate a 2-sentence summary
-       if not search_snippet or len(search_snippet) < 50: # Example: ensure a minimum length
+        search_snippet = summarizer.summarize(raw_best_paragraph, sentence_count=2) 
+       if not search_snippet or len(search_snippet) < 50: 
             max_fallback_length = 300
             if len(raw_best_paragraph) > max_fallback_length:
                 search_snippet = raw_best_paragraph[:max_fallback_length].rsplit(' ', 1)[0] + '...'
@@ -92,22 +91,37 @@ def perform_search_api():
 
 @main_bp.route('/login', methods=['GET', 'POST'])
 def login():
-   if not current_user.is_authenticated:
-       dummy_user = db.session.execute(db.select(User).filter_by(username='testuser')).scalar_one_or_none()
-       if not dummy_user:
-           dummy_user = User(username='testuser', email='test@example.com')
-           dummy_user.set_password('password')
-           db.session.add(dummy_user)
-           db.session.commit()
+    if request.method == 'POST':
+        email = request.form.get('email')
+        password = request.form.get('password')
+        
+        dummy_user = db.session.execute(db.select(User).filter_by(username='testuser')).scalar_one_or_none()
+        if not dummy_user:
+            dummy_user = User(username='testuser', email='test@example.com')
+            dummy_user.set_password('password')
+            db.session.add(dummy_user)
+            db.session.commit()
+            
+        login_user(dummy_user)
+        flash("Logged in as testuser (dummy login).", "info")
+        return redirect(url_for('main.search_input_page'))
 
+    if current_user.is_authenticated:
+        return redirect(url_for('main.search_input_page'))
+        
+    return render_template('login_screen.html') 
 
-       login_user(dummy_user)
-       flash("Logged in as testuser (dummy login).", "info")
-       return redirect(url_for('main.search_input_page'))
+@main_bp.route('/signup', methods=['GET', 'POST'])
+def signup():
+    if request.method == 'POST':
+        name = request.form.get('name')
+        email = request.form.get('email')
+        password = request.form.get('password')
+        
+        flash("Sign up successful! Please log in.", "success")
+        return redirect(url_for('main.login'))
 
-
-   return redirect(url_for('main.search_input_page'))
-
+    return render_template('signup_screen.html') 
 
 @main_bp.route('/logout')
 def logout_user_route():
@@ -116,21 +130,17 @@ def logout_user_route():
        flash("You have been logged out.", "info")
    return redirect(url_for('main.welcome_page'))
 
-# In notes-summarizer-app/routes.py, inside view_doc function
 
 @main_bp.route('/view_doc/<path:doc_filename>')
 def view_doc(doc_filename):
     ir_engine = current_app.config.get('IR_ENGINE')
-    #summarizer = current_app.config.get('SUMMARIZER') # <--- IMPORTANT: Re-enable summarizer here
 
-    # Check both services now that summarizer is used here
     if ir_engine is None:
         flash("Search services not available. Please check server logs for initialization errors.", "error")
         return redirect(url_for('main.search_input_page'))
 
     full_text = ir_engine.get_document_text(doc_filename)
     if full_text:
-        #document_summary = summarizer.summarize(full_text) # <--- Generate summary here
         return render_template('full_text_view.html',
                                filename=doc_filename.replace('.txt', ''),
                                text=full_text

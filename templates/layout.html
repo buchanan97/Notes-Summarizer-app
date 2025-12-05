@@ -1,10 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{% block title %}"APP NAME"{% endblock %}</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <title>{% block title %}Notes Summarizer{% endblock %}</title>
+  
+  <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='welcome.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='search.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='results.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='media.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='auth.css') }}">
+  
   <link rel="icon" href="{{ url_for('static', filename='assets/logo.png') }}">
 </head>
 <body>
@@ -12,7 +20,7 @@
     <header class="global-header">
     <div class="nav">
       <img src="{{ url_for('static', filename='assets/logo.png') }}" class="nav-logo" alt="APP NAME Logo">
-      <span class="nav-title">"APP NAME"</span>
+      <span class="nav-title">Notes Summarizer</span>
       <div class="user-icon">👤</div>
     </div>
   </header>
@@ -21,8 +29,6 @@
     {% block content %}{% endblock %}
   </main>
 
-  <footer class="global-footer">
-    <p>© 2025 "APP NAME" • Built for Knowledge Discovery</p>
-  </footer>
+  
 </body>
 </html>

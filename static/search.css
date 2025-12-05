@@ -1,0 +1,100 @@
+.search-page-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 30px 20px;
+}
+
+.search-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+.search-header h1 {
+    font-size: 1.5rem;
+    color: #1e293b;
+}
+
+.header-actions { font-size: 0.9rem; }
+.user-greeting { color: #0f172a; margin-right: 10px; }
+.logout-btn { color: #dc2626; } 
+.login-btn { color: #0077b6; }
+
+.search-form-section {
+    margin-bottom: 30px;
+}
+#search-form {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+#query {
+    flex-grow: 1;
+    padding: 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font-size: 1rem;
+    min-width: 0; 
+}
+
+.recent-searches-section h2 { font-size: 1.2rem; margin-bottom: 15px; }
+.recent-searches-list {
+    list-style: none;
+    padding: 0;
+}
+.recent-searches-list li {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    padding: 10px 15px;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    color: #334155;
+    font-size: 0.95rem;
+}
+
+.search-results-section h2 { font-size: 1.2rem; margin-top: 30px; margin-bottom: 15px; }
+.loading-message, .error-message, .no-results, .initial-message {
+    text-align: center;
+    color: #64748b;
+    padding: 20px;
+}
+.error-message { color: #dc2626; }
+
+.search-results-section .result-card {
+    background: white;
+    border-radius: 12px;
+    padding: 15px 20px;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.recent-searches-tags {
+    display: flex;
+    flex-wrap: wrap; 
+    gap: 10px; 
+    margin-top: 15px;
+}
+
+.search-tag {
+    background: #FFFFFF; 
+    border: 1px solid #E0E0E0; 
+    color: #475569;
+    padding: 8px 15px;
+    border-radius: 8px; 
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: background-color 0.2s, border-color 0.2s;
+    user-select: none;
+}
+
+.search-tag:hover {
+    background-color: #F8F8F8; 
+    border-color: #C0C0C0;
+}
+.doc-snippet {
+    font-size: 0.9rem;
+    color: #475569;
+}
