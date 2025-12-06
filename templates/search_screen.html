@@ -3,17 +3,6 @@
 
 {% block content %}
 <div class="search-page-container">
-    <header class="search-header">
-        <h1>Search Your Notes</h1>
-        <div class="header-actions">
-            {% if current_user.is_authenticated %}
-                <span class="user-greeting">Hello, {{ current_user.username }}!</span>
-                <a href="{{ url_for('main.logout_user_route') }}" class="logout-btn">Logout</a>
-            {% else %}
-                <span class="user-status">Not Logged In (<a href="{{ url_for('main.login') }}" class="login-btn">Login as Testuser</a>)</span>
-            {% endif %}
-        </div>
-    </header>
 
     <main class="search-main">
         <section class="search-form-section">
@@ -95,7 +84,12 @@
                         <div class="card-content">
                             <div class="card-text">
                                 <h3 class="doc-title">${result.display_filename} (Score: ${result.score})</h3>
-                                <p class="doc-source">Source: ${result.source || "Textbook"}</p>
+                                
+                                <p class="doc-source">
+                                    <img src="{{ url_for('static', filename='assets/book_icon.svg') }}" class="source-icon" alt="Book Icon">
+                                    Source: ${result.source || "Textbook"}
+                                </p>
+                                
                                 <p class="doc-snippet">${result.snippet}</p> 
                             </div>
                             

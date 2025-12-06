@@ -18,7 +18,7 @@ p { color: #475569; }
   background: white;
   box-shadow: 0 2px 5px rgba(0,0,0,0.05);
 }
-.nav-logo { width: 50px; }
+.nav-logo { width: 70px; }
 .nav-title { font-weight: 600; font-size: 1.2rem; color: #0077b6; }
 .user-icon { font-size: 1.5rem; color: #475569; }
 
@@ -37,3 +37,56 @@ p { color: #475569; }
 a { text-decoration: none; color: #00b4d8; }
 a:hover { text-decoration: underline; }
 
+.user-menu-container {
+    position: relative;
+    display: inline-block;
+}
+
+.user-icon { 
+    background: none;
+    border: none;
+    font-size: 1.5rem; 
+    color: #475569;
+    cursor: pointer;
+    padding: 0;
+    margin: 0;
+}
+
+.user-dropdown-content {
+    display: none; 
+    position: absolute;
+    right: 0; 
+    top: 100%; 
+    background-color: white;
+    min-width: 180px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 10;
+    border-radius: 8px;
+    padding: 10px;
+    margin-top: 10px; 
+}
+
+.user-dropdown-content a,
+.dropdown-greeting {
+    color: #1e293b;
+    padding: 10px 15px;
+    text-decoration: none;
+    display: block;
+    text-align: left;
+    font-size: 0.95rem;
+}
+
+.dropdown-greeting {
+    font-weight: 600;
+    margin-bottom: 5px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.dropdown-logout-btn:hover {
+    background-color: #f4f7fb;
+    border-radius: 4px;
+}
+
+.show {
+    display: block;
+}

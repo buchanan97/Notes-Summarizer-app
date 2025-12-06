@@ -19,9 +19,21 @@
 
     <header class="global-header">
     <div class="nav">
-      <img src="{{ url_for('static', filename='assets/logo.png') }}" class="nav-logo" alt="APP NAME Logo">
-      <span class="nav-title">Notes Summarizer</span>
-      <div class="user-icon">👤</div>
+    <img src="{{ url_for('static', filename='assets/logo.png') }}" class="nav-logo" alt="APP NAME Logo">
+    <span class="nav-title">Notes Summarizer</span>
+    
+    <div class="user-menu-container">
+        <button class="user-icon" onclick="toggleMenu()">👤</button> 
+        
+        <div id="user-dropdown" class="user-dropdown-content">
+            {% if current_user.is_authenticated %}
+                <span class="dropdown-greeting">Hello, {{ current_user.username }}!</span>
+                <a href="{{ url_for('main.logout_user_route') }}" class="dropdown-logout-btn">Logout</a>
+            {% else %}
+                <a href="{{ url_for('main.login') }}" class="dropdown-logout-btn">Login</a>
+            {% endif %}
+        </div>
+    </div>
     </div>
   </header>
 
@@ -29,6 +41,23 @@
     {% block content %}{% endblock %}
   </main>
 
-  
+<script>
+function toggleMenu() {
+  document.getElementById("user-dropdown").classList.toggle("show");
+}
+
+window.onclick = function(event) {
+  if (!event.target.matches('.user-icon')) {
+    var dropdowns = document.getElementsByClassName("user-dropdown-content");
+    for (var i = 0; i < dropdowns.length; i++) {
+      var openDropdown = dropdowns[i];
+      if (openDropdown.classList.contains('show')) {
+        openDropdown.classList.remove('show');
+      }
+    }
+  }
+}
+</script>
+ 
 </body>
 </html>

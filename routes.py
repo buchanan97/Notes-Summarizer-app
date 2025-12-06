@@ -6,6 +6,13 @@ from sqlalchemy import select
 from models.recent_search import RecentSearch
 from models.user import User
 from extensions import db
+from flask import Blueprint, render_template, request, jsonify, current_app, redirect, url_for, flash
+from flask_login import login_required, current_user, login_user, logout_user
+from sqlalchemy import select
+from models.recent_search import RecentSearch
+from models.user import User 
+from extensions import db
+from sqlalchemy.exc import IntegrityError 
 
 
 main_bp = Blueprint('main', __name__)
@@ -91,37 +98,64 @@ def perform_search_api():
 
 @main_bp.route('/login', methods=['GET', 'POST'])
 def login():
+    if current_user.is_authenticated:
+        return redirect(url_for('main.search_input_page'))
+
     if request.method == 'POST':
         email = request.form.get('email')
         password = request.form.get('password')
-        
-        dummy_user = db.session.execute(db.select(User).filter_by(username='testuser')).scalar_one_or_none()
-        if not dummy_user:
-            dummy_user = User(username='testuser', email='test@example.com')
-            dummy_user.set_password('password')
-            db.session.add(dummy_user)
-            db.session.commit()
-            
-        login_user(dummy_user)
-        flash("Logged in as testuser (dummy login).", "info")
-        return redirect(url_for('main.search_input_page'))
 
-    if current_user.is_authenticated:
-        return redirect(url_for('main.search_input_page'))
+        user = db.session.execute(db.select(User).filter_by(email=email)).scalar_one_or_none()
+
+        if user is None or not user.check_password(password):
+            flash("Invalid email or password.", "error")
+            return render_template('login_screen.html', email=email) 
         
+        login_user(user, remember=True) 
+        flash(f"Welcome back, {user.username}!", "success")
+        
+        return redirect(url_for('main.search_input_page'))
+    
     return render_template('login_screen.html') 
 
 @main_bp.route('/signup', methods=['GET', 'POST'])
 def signup():
+    if current_user.is_authenticated:
+        flash("You are already logged in.", "info")
+        return redirect(url_for('main.search_input_page'))
+
     if request.method == 'POST':
-        name = request.form.get('name')
+        name = request.form.get('name') 
         email = request.form.get('email')
         password = request.form.get('password')
-        
-        flash("Sign up successful! Please log in.", "success")
-        return redirect(url_for('main.login'))
+        confirm_password = request.form.get('confirm_password') 
 
-    return render_template('signup_screen.html') 
+        if password != confirm_password:
+            flash("Passwords do not match.", "error")
+            return render_template('signup_screen.html', email=email, name=name)
+        
+
+        try:
+            user_exists = db.session.execute(db.select(User).filter((User.username == name) | (User.email == email))).scalar()
+            if user_exists:
+                flash("An account with that username or email already exists.", "error")
+                return render_template('signup_screen.html', email=email, name=name)
+
+            new_user = User(username=name, email=email)
+            new_user.set_password(password) 
+
+            db.session.add(new_user)
+            db.session.commit()
+
+            flash("Account created successfully! Please log in.", "success")
+            return redirect(url_for('main.login'))
+
+        except IntegrityError:
+            db.session.rollback()
+            flash("Database error. The username or email may already be in use.", "error")
+            return render_template('signup_screen.html', email=email, name=name)
+
+    return render_template('signup_screen.html')
 
 @main_bp.route('/logout')
 def logout_user_route():
