@@ -1,0 +1,1 @@
+they are used within a network in your house, at work, or anywhere else where a group of computers share a connection to the internet. Each of these networks uses one or more of these blocks of numbers for devices on that network. Only the equipment connecting that local network

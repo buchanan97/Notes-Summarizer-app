@@ -1,0 +1,1 @@
+, .3e4 ; If you leave the index out, you get as many elements as you initialize: short int b , , , ; four elements If you declare more than you initialize, the remainder are set to zero if the array is global or static (but not if auto). short int c , , ; remaining are set to If you

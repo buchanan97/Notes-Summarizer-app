@@ -1,0 +1,1 @@
+the data that the program manipulates. Another problem with strict top-down programming is that it makes it di cult to reuse work done for other projects. By starting with a particular p roblem and subdividing it into convenient pieces, top-down programm

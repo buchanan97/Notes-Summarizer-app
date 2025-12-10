@@ -23,18 +23,21 @@
 .search-form-section {
     margin-bottom: 30px;
 }
-#search-form {
+.search-form-inline {
+    max-width: 600px;
+    margin: 0 auto 30px auto;
     display: flex;
-    gap: 10px;
-    align-items: center;
+    border: 1px solid #cbd5e1;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #fff; 
 }
 #query {
-    flex-grow: 1;
-    padding: 12px;
-    border: 1px solid #cbd5e1;
-    border-radius: 8px;
+    width: 100%;       
+    padding: 12px 15px;
+    border: none;     
+    outline: none;     
     font-size: 1rem;
-    min-width: 0; 
 }
 
 .recent-searches-section h2 { font-size: 1.2rem; margin-bottom: 15px; }
@@ -97,4 +100,21 @@
 .doc-snippet {
     font-size: 0.9rem;
     color: #475569;
+}
+.doc-source {
+    display: inline-flex;
+    align-items: center;
+    background: #F1F5F9; 
+    color: #475569; 
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    margin-top: 5px;
+}
+
+.source-icon {
+    width: 14px;
+    margin-right: 6px;
+    height: auto;
 }

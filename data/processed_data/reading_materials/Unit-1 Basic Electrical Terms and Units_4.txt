@@ -1,0 +1,1 @@
+are connected inseries across V.Find voltage across each bulb. Solution :-

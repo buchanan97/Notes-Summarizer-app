@@ -1,0 +1,1 @@
+sec, what will be the e.m.f. induced in coil B? Answers: (i) Self Inductance LA m H As coils are identical, their self inductances will have the same value. LA LB m H (ii) Mutual Inductance M m H (iii) di1 dt ( - )-( ) - - A sec e.m.f induced in coil B -M di dt Volt

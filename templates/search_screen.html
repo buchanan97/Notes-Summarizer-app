@@ -6,7 +6,7 @@
 
     <main class="search-main">
         <section class="search-form-section">
-            <form id="search-form" class="search-form-inline">
+            <form id="search-form" class="search-form-inline" onsubmit="return false;">
                 <input type="text" id="query" name="query" placeholder="Search for algorithms, data structures, ML concepts..." required>
             </form>
         </section>
@@ -43,65 +43,53 @@
         const query = document.getElementById('query').value;
         const resultsDiv = document.getElementById('search-results');
         resultsDiv.innerHTML = '<p class="loading-message">Searching...</p>';
-        console.log("Search initiated for query:", query);
 
         try {
-            const response = await fetch('{{ url_for('main.perform_search_api') }}', {
+            const response = await fetch('{{ url_for("main.perform_search_api") }}', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: `query=${encodeURIComponent(query)}`
             });
 
-            console.log("Response status:", response.status);
-
             if (!response.ok) {
                 const errorData = await response.json();
                 resultsDiv.innerHTML = `<p class="error-message">Error: ${errorData.error || response.statusText}</p>`;
-                console.error("Backend error response:", errorData);
                 return;
             }
 
             const { results, query: returnedQuery } = await response.json();
-            console.log("Data received from backend:", { results, returnedQuery });
             resultsDiv.innerHTML = '';
 
             if (results.length === 0) {
                 resultsDiv.innerHTML = `<p class="no-results">No results found for "${returnedQuery}". Try another query.</p>`;
-                console.log("No results found.");
             } else {
-                console.log("Processing", results.length, "results...");
                 results.forEach(result => {
                     const resultCard = document.createElement('div');
                     resultCard.className = 'result-card';
 
-                    const docUrl = viewDocBaseUrl.replace('DOC_ID_PLACEHOLDER', encodeURIComponent(result.filename));
+                    const scoreVal = result.score ? parseFloat(result.score) : 0;
+                    const displayScore = !isNaN(scoreVal) ? scoreVal.toFixed(4) : "0.0000";
 
-                    console.log("Result object:", result);
-                    console.log("Display Filename:", result.display_filename);
-                    console.log("Snippet:", result.snippet); 
+                    const docUrl = viewDocBaseUrl.replace('DOC_ID_PLACEHOLDER', encodeURIComponent(result.filename));
 
                     resultCard.innerHTML = `
                         <div class="card-content">
                             <div class="card-text">
-                                <h3 class="doc-title">${result.display_filename} (Score: ${result.score})</h3>
-                                
+                                <h3 class="doc-title">${result.display_filename} (Score: ${displayScore})</h3>
                                 <p class="doc-source">
-                                    <img src="{{ url_for('static', filename='assets/book_icon.svg') }}" class="source-icon" alt="Book Icon">
-                                    Source: ${result.source || "Textbook"}
+                                    <img src="/static/assets/book_icon.svg" class="source-icon" alt="Icon">
+                                    Source: ${result.source}
                                 </p>
-                                
-                                <p class="doc-snippet">${result.snippet}</p> 
+                                <p class="doc-snippet">${result.snippet || "No preview summary available."}</p> 
                             </div>
-                            
                         </div>
                     `;
                     resultsDiv.appendChild(resultCard);
-                });
+                }); 
             }
         } catch (error) {
             resultsDiv.innerHTML = `<p class="error-message">An unexpected error occurred: ${error.message}</p>`;
-            console.error('Fetch error:', error);
         }
-    });
+    }); 
 </script>
 {% endblock %}

@@ -1,0 +1,1 @@
+of a number Algorithm Step- Start Step- Read number N Step- D Step- WHILE (D N) DO IF ( N D ) THEN PRINT D ENDIF D D DONE Step- Stop

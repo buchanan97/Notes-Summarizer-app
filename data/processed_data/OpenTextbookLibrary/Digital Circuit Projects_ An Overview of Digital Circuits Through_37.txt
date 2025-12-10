@@ -1,0 +1,1 @@
+xor is , otherwise it is . Show that this is true for and variable XOR functions, e.g. A B C, and A B C D. DIGITAL CIRCUIT PROJ ECTS . For the following tru th table: a

@@ -1,0 +1,1 @@
+decide to what next node to forward it. This is known as store-and-forward , and introduces aforwarding delay equal to the time needed to read in the entire packet. For individual packets this forwarding delay is hard to avoid (though some higher-end switches do implement cut-through switching to begin forwarding a pac

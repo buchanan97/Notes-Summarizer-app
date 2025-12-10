@@ -1,0 +1,1 @@
+(num ) console.log("Medium"); else console.log("Large"); The program will first check whether numis less than . If it is, it chooses that branch, shows "Small", and is done. If it isn t, it takes the elsebranch, which itself contains a second if. If the second condition ( ) holds, that means the

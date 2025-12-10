@@ -1,0 +1,1 @@
+time println () executes the output will start on a new line Produce one line of output with one double value; System.out.println (gross Pa

@@ -25,16 +25,14 @@ class Config:
 
 
 def create_app():
-    app = Flask(__name__,
-                template_folder='templates',
-                static_folder='static')
+    app = Flask(__name__, template_folder='templates', static_folder='static')
     app.config.from_object(Config)
 
     db.init_app(app)
     login_manager.init_app(app)
     login_manager.login_view = 'main.main_screen'
 
-    from models.user import User 
+    from models.user import User
     @login_manager.user_loader
     def load_user(user_id):
         return db.session.execute(db.select(User).filter_by(id=user_id)).scalar_one_or_none()
@@ -44,22 +42,27 @@ def create_app():
     with app.app_context():
         db.create_all()
 
-        try:
-            processed_data_path = os.path.join(project_root, "data", "processed_data")
-            if not os.path.exists(processed_data_path) or not os.listdir(processed_data_path):
-                print(f"WARNING: No processed data found at {processed_data_path}. "
-                      f"Please run 'python3 back_end_processing/collect_and_clean_data.py' first.")
-                app.config['IR_ENGINE'] = None
-                app.config['SUMMARIZER'] = None
-            else:
-                app.config['IR_ENGINE'] = IREngine(processed_data_path)
-                app.config['SUMMARIZER'] = Summarizer()
-                print("IR Engine and Summarizer initialized successfully.")
-        except Exception as e:
-            print(f"CRITICAL ERROR: Failed to initialize IR Engine or Summarizer: {e}")
+        processed_data_path = os.path.join(project_root, "data", "processed_data")
+
+        def folder_has_txt(path):
+            for root, dirs, files in os.walk(path):
+                for f in files:
+                    if f.lower().endswith(".txt"):
+                        return True
+            return False
+
+        if not folder_has_txt(processed_data_path):
+            print(f"WARNING: No processed data found at {processed_data_path}. "
+                  f"Run: python3 back_end_processing/collect_and_clean_data.py")
             app.config['IR_ENGINE'] = None
             app.config['SUMMARIZER'] = None
+        else:
+            app.config['IR_ENGINE'] = IREngine(processed_data_path)
+            app.config['SUMMARIZER'] = Summarizer()
+            print("IR Engine and Summarizer initialized successfully.")
+
     return app
+
 
 def run_flask():
     app_instance = create_app()

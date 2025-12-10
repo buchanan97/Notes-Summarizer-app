@@ -1,0 +1,1 @@
+layout . .What happens when anarray with aspecified size isassigned atcompile time, a.with values less than thespecified size. b.with values more than thespecified size. Chapter : Arrays

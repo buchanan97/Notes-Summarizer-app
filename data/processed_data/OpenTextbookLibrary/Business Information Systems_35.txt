@@ -1,0 +1,1 @@
+of a drawn object. An outline is the color, gradient, or pattern that borders the drawn object. Power Point has extensive fill and outline options. Differen

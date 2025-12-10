@@ -1,5 +1,0 @@
-#please install this guys in order the program to work on your end.
-#this will help us with text ranking , and version 4.0 isn't working so 3.8.3 is the best bet.
-#run this in the terminal please. Let me know if this works
-
-#pip install flask scikit-learn numpy joblib gensim==3.8.3
